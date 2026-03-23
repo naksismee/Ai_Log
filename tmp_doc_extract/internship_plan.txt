@@ -1,0 +1,15 @@
+AI & ML Internship Learning + Project Plan (8 Weeks)
+Overview
+Duration: 8 Weeks (2 Months) Learning Phase: 5 Weeks Project Phase: 3 Weeks  Goal: Build strong fundamentals in AI/ML and deliver a production-ready AI-based project (Log Analyzer / Neurodesk-style system).
+Week 1: Python Core + Logging Fundamentals
+- Python revision (functions, classes, OOP basics) - Exception handling & file handling - Python logging module (levels, handlers, formatters) - Parsing logs (regex, JSON, CSV)  Outcome: Able to read, parse, and log structured/unstructured data.
+Week 2: Data Processing + Databases
+- Data cleaning & preprocessing - PostgreSQL / MySQL basics - Python DB connectivity - Writing efficient queries  Outcome: Store and retrieve processed logs efficiently.
+Week 3: NLP Fundamentals + Embeddings
+- Text preprocessing - Embeddings concept - Sentence Transformers - Similarity search  Outcome: Convert logs/text into numerical vectors for AI processing.
+Week 4: Vector Databases + LLM Basics
+- Vector databases (FAISS / Chroma) - Storing & searching embeddings - LLM fundamentals - Prompt engineering basics  Outcome: Perform semantic search and AI-powered analysis.
+Week 5: Backend + Automation
+- Python framework (FastAPI / Flask) - API design - Background jobs & schedulers - Basic authentication  Outcome: Expose AI features via APIs.
+Week 6–8: Project Phase
+Project: AI Log Analyzer / Neurodesk  Features: - Log ingestion & parsing - Duplicate vs unique error detection - Embedding-based clustering - Vector DB similarity search - LLM-based explanation & resolution suggestions - Simple React frontend  Success Criteria: - Clean, readable code - Proper documentation - Working end-to-end demo

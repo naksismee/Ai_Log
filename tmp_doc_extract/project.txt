@@ -1,0 +1,56 @@
+AI Log Analyzer – Automation & Intelligence Project
+Project Overview
+Modern software systems generate massive volumes of logs containing information, warnings, and errors.
+Manual log analysis is time-consuming and inefficient, especially in production environments.
+The AI Log Analyzer is an intelligent automation system that continuously monitors logs, identifies critical issues, groups similar errors, summarizes problems using AI, and sends real-time alerts.
+Objectives
+• Automatically analyze large log files
+• Detect and extract ERROR and WARNING messages
+• Group similar log issues using semantic similarity
+• Generate human-readable summaries using AI
+• Send real-time alerts via Slack or Email
+• Store known issues for faster future detection
+Technology Stack
+Backend: FastAPI (preferred) / Flask / Django REST
+Frontend: React.js
+Databases:
+• Vector Database: FAISS / ChromaDB
+• Relational Database: PostgreSQL / SQLite
+AI & Automation Tools
+• SentenceTransformers for generating embeddings
+• LLM API (OpenAI or local LLM) for summarization and reasoning
+• Cosine similarity for grouping similar log messages
+• Scheduler / Cron jobs for automation
+• Slack Webhooks / SMTP for alert notifications
+Core Modules
+1. Log Ingestion Module – Reads log files and streams live logs
+2. Log Parsing & Filtering Module – Extracts ERROR and WARN entries
+3. Embedding & Similarity Module – Groups similar issues
+4. AI Analysis & Summarization Module – Generates insights and explanations
+5. Known Issues Memory Module – Stores recurring problems
+6. Alerting Module – Sends notifications on critical issues
+7. Automation Scheduler – Runs analysis periodically
+Expected Deliverables
+• Backend APIs for log ingestion and analysis
+• React-based dashboard for visualization
+• Automated log monitoring system
+• AI-generated summaries and insights
+• Alerting system integration
+• Complete project documentation
+Optional Enhancements
+• Severity classification (Low / Medium / High)
+• Error trend and frequency analysis
+• Jira integration for automatic bug creation
+• Multi-application support
+• Real-time streaming dashboard
+Success Criteria
+• Efficient handling of large log files
+• Accurate grouping of similar errors
+• Clear and meaningful AI summaries
+• Timely and reliable alerting
+• Demonstrated automation value
+Learning Outcomes
+• Understanding real-world production issues
+• Hands-on experience with AI and automation
+• Working with embeddings and vector databases
+• Building an end-to-end full-stack AI system

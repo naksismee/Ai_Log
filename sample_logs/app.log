@@ -1,0 +1,5 @@
+INFO 2024-01-01 Server started
+WARNING 2024-01-01 High memory usage detected
+ERROR 2024-01-01 Database connection failed
+INFO 2024-01-01 User login successful
+ERROR 2024-01-01 Timeout while calling payment service

@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>AI Log Analyzer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600..900&family=IBM+Plex+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <div class="bg"></div>
+    <header class="header">
+      <div class="brand">
+        <div class="mark">ALA</div>
+        <div>
+          <div class="title">AI Log Analyzer</div>
+          <div class="subtitle">Cluster • Summarize • Remember • Alert</div>
+        </div>
+      </div>
+      <div class="status" id="healthStatus">Checking…</div>
+    </header>
+
+    <main class="grid">
+      <section class="card">
+        <h2>Analyze a log file</h2>
+        <form id="uploadForm" class="form">
+          <label class="field">
+            <span>Log file</span>
+            <input id="fileInput" type="file" accept=".log,.txt" required />
+          </label>
+          <div class="row">
+            <label class="field">
+              <span>Similarity threshold</span>
+              <input id="thresholdInput" type="number" min="0" max="1" step="0.01" value="0.80" />
+            </label>
+            <label class="field">
+              <span>Embedding model</span>
+              <input id="modelInput" type="text" value="all-MiniLM-L6-v2" />
+            </label>
+          </div>
+          <div class="row tight">
+            <label class="check">
+              <input id="rememberInput" type="checkbox" checked />
+              <span>Remember as known issues</span>
+            </label>
+            <label class="check">
+              <input id="alertInput" type="checkbox" checked />
+              <span>Enable Slack alerts (requires env)</span>
+            </label>
+          </div>
+          <div class="actions">
+            <button class="btn primary" type="submit">Analyze</button>
+            <button class="btn" type="button" id="clearBtn">Clear known issues</button>
+          </div>
+          <div class="hint" id="uploadHint">
+            First run may download the embedding model from HuggingFace.
+          </div>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2>Results</h2>
+        <div class="meta" id="resultMeta">No analysis yet.</div>
+        <div class="overall" id="overallSummary"></div>
+        <div class="tableWrap">
+          <table class="table" id="clustersTable">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Severity</th>
+                <th>Count</th>
+                <th>Representative</th>
+                <th>Known issue</th>
+              </tr>
+            </thead>
+            <tbody id="clustersBody">
+              <tr><td colspan="5" class="empty">Upload a log to see clusters.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Recent runs</h2>
+        <div class="list" id="runsList"></div>
+      </section>
+
+      <section class="card">
+        <h2>Semantic search</h2>
+        <form id="searchForm" class="form">
+          <label class="field">
+            <span>Search text</span>
+            <input id="searchInput" type="text" placeholder="e.g. database connection refused" />
+          </label>
+          <div class="actions">
+            <button class="btn primary" type="submit">Search</button>
+          </div>
+          <div class="hint">Searches stored cluster representatives (vector DB if available, otherwise fallback).</div>
+        </form>
+        <div class="list" id="searchResults"></div>
+      </section>
+
+      <section class="card">
+        <h2>Known issues</h2>
+        <div class="list" id="knownIssuesList"></div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div>API: <span class="mono">/analyze-log</span> • <span class="mono">/recent-runs</span> • <span class="mono">/known-issues</span></div>
+      <div class="mono" id="footerNote"></div>
+    </footer>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>
