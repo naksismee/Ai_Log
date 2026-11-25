@@ -1,0 +1,14 @@
+name: Test demo workflow
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  demo-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r backend/requirements-demo.txt httpx
+      - run: python -m unittest discover -s tests -v

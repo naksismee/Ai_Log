@@ -46,7 +46,16 @@ def _startup() -> None:
 
 @app.get("/health")
 def health() -> Dict[str, str]:
-    return {"status": "ok"}
+    demo = os.getenv('AI_LOG_ANALYZER_DEMO', '').lower() in {'1', 'true', 'yes'}
+    return {"status": "ok", "mode": "demo" if demo else "semantic"}
+
+
+@app.get('/sample-log')
+def sample_log() -> FileResponse:
+    sample = pathlib.Path(__file__).resolve().parents[2] / 'sample_logs' / 'recruiter.log'
+    if not sample.is_file():
+        raise HTTPException(status_code=404, detail='Sample log not found')
+    return FileResponse(sample, media_type='text/plain', filename='recruiter.log')
 
 
 @app.get("/")
@@ -58,11 +67,11 @@ def ui() -> FileResponse:
 
 
 # =========================
-# 🔥 NEW: TREND ANALYSIS
+# Timestamp-based trend analysis
 # =========================
 def extract_timestamp(log: str):
     try:
-        return datetime.strptime(log[:19], "%Y-%m-%d %H:%M:%S")
+        return datetime.strptime(log[:19].replace('T', ' '), "%Y-%m-%d %H:%M:%S")
     except:
         return None
 
@@ -108,8 +117,8 @@ async def analyze_log(
 
     messages = [e.message for e in entries]
 
-    # 🔥 NEW: trend analysis
-    trend_data = analyze_trends(messages)
+    # Keep timestamps available for trend buckets.
+    trend_data = analyze_trends([entry.raw_log for entry in entries])
 
     try:
         clusters = cluster_messages(
@@ -162,10 +171,10 @@ async def analyze_log(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-    # 🔥 IMPROVED: sort clusters by importance
+    # Sort recurring clusters for the dashboard.
     sorted_clusters = sorted(clusters, key=lambda c: (c.count, c.severity == "HIGH"), reverse=True)
 
-    return {
+    result = {
         "filename": file.filename,
         "total_lines": len(text.splitlines()),
         "issues_found": len(entries),
@@ -173,14 +182,14 @@ async def analyze_log(
         "model_name": model_name,
         "summary": summaries.get("overall"),
 
-        # 🔥 NEW: trends in response
+        # Hourly issue counts.
         "trends": trend_data,
 
         "clusters": [
             {
                 "cluster_id": c.cluster_id,
                 "severity": c.severity,
-                "frequency": c.count,   # 👈 renamed (looks better in UI/interviews)
+                "frequency": c.count,
                 "count": c.count,
                 "representative": c.representative,
                 "examples": c.examples,
@@ -191,6 +200,16 @@ async def analyze_log(
             for c in sorted_clusters
         ],
     }
+    result['run_id'] = analysis_store.insert_run(
+        source_name=file.filename,
+        total_lines=result['total_lines'],
+        issues_found=result['issues_found'],
+        model_name=model_name,
+        threshold=threshold,
+        summary=result['summary'],
+        clusters=result['clusters'],
+    )
+    return result
 
 
 @app.post("/analyze-path")

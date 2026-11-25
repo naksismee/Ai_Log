@@ -34,8 +34,15 @@ async function api(path, opts = {}) {
 
 async function refreshHealth() {
   try {
-    await api("/health");
-    $("healthStatus").textContent = "API: healthy";
+    const health = await api("/health");
+    const demo = health.mode === "demo";
+    $("healthStatus").textContent = demo ? "Demo: local keyword vectors" : "Semantic analysis ready";
+    if (demo) {
+      $("uploadHint").textContent = "Demo mode uses local keyword vectors, with no model download or API key. Try the sample log to explore the workflow.";
+      $("modelInput").value = "demo-keyword-vectors";
+      $("modelInput").disabled = true;
+      $("alertInput").checked = false;
+    }
     $("healthStatus").classList.remove("bad");
     $("healthStatus").classList.add("ok");
   } catch {
@@ -157,8 +164,11 @@ async function refreshRuns() {
 
 async function onUploadSubmit(ev) {
   ev.preventDefault();
-  const f = $("fileInput").files?.[0];
-  if (!f) return;
+  const file = $("fileInput").files?.[0];
+  if (file) await analyzeFile(file);
+}
+
+async function analyzeFile(f) {
   const threshold = Number($("thresholdInput").value || "0.8");
   const model = $("modelInput").value || "all-MiniLM-L6-v2";
   const remember = $("rememberInput").checked ? "true" : "false";
@@ -198,6 +208,17 @@ async function onClearKnownIssues() {
 async function init() {
   $("uploadForm").addEventListener("submit", onUploadSubmit);
   $("clearBtn").addEventListener("click", onClearKnownIssues);
+  $("sampleBtn").addEventListener("click", async () => {
+    $("sampleBtn").disabled = true;
+    try {
+      const response = await fetch("/sample-log");
+      if (!response.ok) throw new Error("Could not load the sample log.");
+      const file = new File([await response.blob()], "recruiter.log", { type: "text/plain" });
+      await analyzeFile(file);
+    } catch (error) {
+      $("footerNote").textContent = error.message;
+    } finally { $("sampleBtn").disabled = false; }
+  });
   $("searchForm").addEventListener("submit", async (ev) => {
     ev.preventDefault();
     const q = $("searchInput").value || "";
